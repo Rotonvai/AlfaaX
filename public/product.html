@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlfaaX Products - Innovative Web Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5649c0;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --gray: #dfe6e9;
+            --dark-gray: #636e72;
+            --transition: all 0.3s ease;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .dark-mode {
+            --primary: #7e6df1;
+            --primary-dark: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark: #f5f6fa;
+            --light: #1e272e;
+            --gray: #2d3436;
+            --dark-gray: #dfe6e9;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.1s ease;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            position: sticky;
+            top: 0;
+            background-color: rgba(245, 246, 250, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode header {
+            background-color: rgba(30, 39, 46, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--secondary);
+            font-size: 2.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a.active {
+            color: var(--primary);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            color: var(--primary);
+            transform: rotate(30deg);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(0, 206, 201, 0.1));
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Products Section */
+        .products-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--light);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--gray);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image i {
+            font-size: 4rem;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .product-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+        }
+
+        .product-description {
+            color: var(--dark-gray);
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .product-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-features li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .product-features li i {
+            color: var(--secondary);
+            font-size: 0.8rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-sm {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-full {
+            flex: 1;
+            text-align: center;
+        }
+
+        /* Categories Section */
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .category-btn {
+            background: var(--gray);
+            color: var(--dark);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 3rem 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--dark-gray);
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-wrap: wrap;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .header-controls {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <i class="fas fa-search-plus logo-icon"></i>
+            AlfaaX
+        </a>
+        <!-- <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#" class="active">Products</a></li>
+                <li><a href="#">Technology</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav> -->
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="auth-buttons">
+                <button class="btn btn-outline">Sign In</button>
+                <button class="btn btn-primary">Get Started</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero fade-in">
+            <h1 class="hero-title">AlfaaX Product Suite</h1>
+            <p class="hero-subtitle">Discover our collection of innovative web applications designed to enhance productivity, creativity, and digital experiences.</p>
+            <!-- <div class="categories">
+                <button class="category-btn active">All Products</button>
+                <button class="category-btn">Productivity</button>
+                <button class="category-btn">Finance</button>
+                <button class="category-btn">Games</button>
+                <button class="category-btn">Utilities</button>
+            </div> -->
+        </section>
+
+        <!-- Products Section -->
+        <section class="products-section">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="products-grid">
+                <!-- Product 1: Learnn5BD -->
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span class="product-badge">Education</span>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">Learnn5BD</h3>
+                        <p class="product-description">An interactive learning platform designed for Bangladeshi students with comprehensive courses and progress tracking.</p>
+                        <ul class="product-features">
+                            <li><i class="fas fa-check"></i> Interactive courses</li>
+                            <li><i class="fas fa-check"></i> Progress tracking</li>
+                            <li><i class="fas fa-check"></i> Localized content</li>
+                        </ul>
+                        <div class="product-actions">
+                            <a href="https://rotonvai.github.io/learnn5bd/" class="btn btn-primary btn-full">View Project</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2: Durgapur City Bank -->
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        <i class="fas fa-university"></i>
+                        <span class="product-badge">Finance</span>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">Durgapur City Bank</h3>
+                        <p class="product-description">A modern banking interface with account management, transaction history, and financial planning tools.</p>
+                        <ul class="product-features">
+                            <li><i class="fas fa-check"></i> Account management</li>
+                            <li><i class="fas fa-check"></i> Transaction history</li>
+                            <li><i class="fas fa-check"></i> Financial tools</li>
+                        </ul>
+                        <div class="product-actions">
+                            <a href="https://rotonvai.github.io/Durgapur-City-Bank/" class="btn btn-primary btn-full">View Project</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3: Business Calculator -->
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        <i class="fas fa-calculator"></i>
+                        <span class="product-badge">Productivity</span>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">Business Calculator</h3>
+                        <p class="product-description">A comprehensive calculator for business operations including profit calculations, tax estimates, and financial projections.</p>
+                        <ul class="product-features">
+                            <li><i class="fas fa-check"></i> Profit calculations</li>
+                            <li><i class="fas fa-check"></i> Tax estimates</li>
+                            <li><i class="fas fa-check"></i> Financial projections</li>
+                        </ul>
+                        <div class="product-actions">
+                            <a href="https://rotonvai.github.io/Business_cal/" class="btn btn-primary btn-full">View Project</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4: Tic Tac Toe -->
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        <i class="fas fa-gamepad"></i>
+                        <span class="product-badge">Game</span>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">Tic Tac Toe</h3>
+                        <p class="product-description">A classic game with a modern twist. Play against the computer or a friend with multiple difficulty levels.</p>
+                        <ul class="product-features">
+                            <li><i class="fas fa-check"></i> Multiple difficulty levels</li>
+                            <li><i class="fas fa-check"></i> Player vs Computer</li>
+                            <li><i class="fas fa-check"></i> Score tracking</li>
+                        </ul>
+                        <div class="product-actions">
+                            <a href="https://rotonvai.github.io/Tic-Tac-Toe/" class="btn btn-primary btn-full">View Project</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 5: AlFAA Note -->
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        <i class="fas fa-sticky-note"></i>
+                        <span class="product-badge">Productivity</span>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">AlFAA Note</h3>
+                        <p class="product-description">A sleek note-taking application with organization features, search functionality, and cloud synchronization.</p>
+                        <ul class="product-features">
+                            <li><i class="fas fa-check"></i> Rich text editing</li>
+                            <li><i class="fas fa-check"></i> Organization features</li>
+                            <li><i class="fas fa-check"></i> Cloud sync</li>
+                        </ul>
+                        <div class="product-actions">
+                            <a href="https://rotonvai.github.io/AlFAA-Note/" class="btn btn-primary btn-full">View Project</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6: To-Do List -->
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        <i class="fas fa-tasks"></i>
+                        <span class="product-badge">Productivity</span>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">To-Do List</h3>
+                        <p class="product-description">A powerful task management application with priority settings, due dates, and progress tracking.</p>
+                        <ul class="product-features">
+                            <li><i class="fas fa-check"></i> Priority settings</li>
+                            <li><i class="fas fa-check"></i> Due dates</li>
+                            <li><i class="fas fa-check"></i> Progress tracking</li>
+                        </ul>
+                        <div class="product-actions">
+                            <a href="https://rotonvai.github.io/To-Do_list/" class="btn btn-primary btn-full">View Project</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 7: Magic Cursor -->
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        <i class="fas fa-magic"></i>
+                        <span class="product-badge">Utility</span>
+                    </div>
+                    <div class="product-content">
+                        <h3 class="product-title">Magic Cursor</h3>
+                        <p class="product-description">Enhance your browsing experience with customizable cursor effects, trails, and interactive elements.</p>
+                        <ul class="product-features">
+                            <li><i class="fas fa-check"></i> Customizable effects</li>
+                            <li><i class="fas fa-check"></i> Interactive trails</li>
+                            <li><i class="fas fa-check"></i> Performance optimized</li>
+                        </ul>
+                        <div class="product-actions">
+                            <a href="https://rotonvai.github.io/Magic_Cursor/" class="btn btn-primary btn-full">View Project</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>AlfaaX</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Products</h3>
+                <ul class="footer-links">
+                    <li><a href="#">AlfaaX Search</a></li>
+                    <li><a href="#">All Applications</a></li>
+                    <li><a href="#">API</a></li>
+                    <li><a href="#">Download</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Status</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">GDPR</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2023 AlfaaX Technologies. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Theme Management
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('alfaaX-theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                enableDarkMode();
+            } else {
+                enableLightMode();
+            }
+        }
+
+        function enableDarkMode() {
+            body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            localStorage.setItem('alfaaX-theme', 'dark');
+        }
+
+        function enableLightMode() {
+            body.classList.remove('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            localStorage.setItem('alfaaX-theme', 'light');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        });
+
+        // Initialize theme
+        initTheme();
+
+        // Category filtering
+        document.querySelectorAll('.category-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // In a real implementation, you would filter products here
+                // For this demo, we'll just show a simple animation
+                document.querySelectorAll('.product-card').forEach(card => {
+                    card.style.opacity = '0.7';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                    }, 300);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

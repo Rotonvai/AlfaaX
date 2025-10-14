@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How AlfaaX Search Works - Search Reimagined</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5649c0;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --gray: #dfe6e9;
+            --dark-gray: #636e72;
+            --transition: all 0.3s ease;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .dark-mode {
+            --primary: #7e6df1;
+            --primary-dark: #6c5ce7;
+            --secondary: #00cec9;
+            --accent: #fd79a8;
+            --dark: #f5f6fa;
+            --light: #1e272e;
+            --gray: #2d3436;
+            --dark-gray: #dfe6e9;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.1s ease;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            position: sticky;
+            top: 0;
+            background-color: rgba(245, 246, 250, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode header {
+            background-color: rgba(30, 39, 46, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--secondary);
+            font-size: 2.2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a.active {
+            color: var(--primary);
+        }
+
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            color: var(--primary);
+            transform: rotate(30deg);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(0, 206, 201, 0.1));
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Content Section */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        .process-step {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .process-step:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .step-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .step-icon {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .step-content {
+            flex: 2;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .step-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .step-description {
+            color: var(--dark-gray);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .step-features {
+            list-style: none;
+        }
+
+        .step-features li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--dark);
+        }
+
+        .step-features li i {
+            color: var(--secondary);
+        }
+
+        /* Search Demo */
+        .search-demo {
+            background: var(--gray);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 4rem 0;
+            text-align: center;
+        }
+
+        .demo-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .demo-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--light);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .demo-search-box {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            border: 2px solid var(--gray);
+            outline: none;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .demo-search-box:focus {
+            border-color: var(--primary);
+        }
+
+        .demo-process {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .demo-stage {
+            text-align: center;
+            flex: 1;
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .demo-stage.active {
+            opacity: 1;
+        }
+
+        .demo-stage-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .demo-stage.active .demo-stage-icon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .demo-stage-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .demo-arrow {
+            font-size: 1.5rem;
+            color: var(--dark-gray);
+            margin: 0 1rem;
+        }
+
+        .demo-results {
+            text-align: left;
+            background: var(--light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .demo-result-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        .demo-result-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .demo-result-url {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-result-title {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+            display: block;
+            font-weight: 600;
+        }
+
+        .demo-result-title:hover {
+            text-decoration: underline;
+        }
+
+        .demo-result-snippet {
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--gray);
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-desc {
+            color: var(--dark-gray);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin: 4rem 0;
+        }
+
+        .faq-item {
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+
+        .faq-question:hover {
+            background: var(--gray);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: var(--transition);
+            color: var(--dark-gray);
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 20px;
+            margin: 4rem 0;
+        }
+
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-text {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 3rem 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--dark-gray);
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-wrap: wrap;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .header-controls {
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .process-step, .process-step:nth-child(even) {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .demo-process {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .demo-arrow {
+                transform: rotate(90deg);
+            }
+
+            .search-demo {
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">
+            <i class="fas fa-search-plus logo-icon"></i>
+            AlfaaX
+        </a>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#" class="active">How Search Works</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="auth-buttons">
+                <button class="btn btn-outline">Sign In</button>
+                <button class="btn btn-primary">Get Started</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero fade-in">
+            <h1 class="hero-title">How AlfaaX Search Works</h1>
+            <p class="hero-subtitle">Discover the technology and processes behind our search engine that delivers accurate, relevant results in milliseconds.</p>
+        </section>
+
+        <!-- Content Section -->
+        <div class="content-section">
+            <!-- Introduction -->
+            <section class="fade-in">
+                <h2 class="section-title">The Magic Behind Your Search</h2>
+                <p style="text-align: center; color: var(--dark-gray); max-width: 800px; margin: 0 auto 2rem; font-size: 1.1rem;">
+                    When you type a query into AlfaaX, our sophisticated systems work together to understand your intent, search billions of web pages, and return the most helpful results in a fraction of a second.
+                </p>
+            </section>
+
+            <!-- Process Steps -->
+            <section class="process-steps">
+                <!-- Step 1 -->
+                <div class="process-step fade-in">
+                    <div class="step-visual">
+                        <div class="step-icon">
+                            <i class="fas fa-spider"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">1</span>
+                        <h3 class="step-title">Crawling & Indexing</h3>
+                        <p class="step-description">Our web crawlers systematically browse the internet, discovering and analyzing web pages to build a massive search index.</p>
+                        <ul class="step-features">
+                            <li><i class="fas fa-check"></i> Discovers new and updated web pages</li>
+                            <li><i class="fas fa-check"></i> Analyzes content, links, and structure</li>
+                            <li><i class="fas fa-check"></i> Builds a searchable index of the web</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="process-step fade-in">
+                    <div class="step-visual">
+                        <div class="step-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">2</span>
+                        <h3 class="step-title">Query Understanding</h3>
+                        <p class="step-description">We use advanced natural language processing to understand the intent behind your search query.</p>
+                        <ul class="step-features">
+                            <li><i class="fas fa-check"></i> Interprets spelling and grammar</li>
+                            <li><i class="fas fa-check"></i> Recognizes synonyms and related concepts</li>
+                            <li><i class="fas fa-check"></i> Considers context and location</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="process-step fade-in">
+                    <div class="step-visual">
+                        <div class="step-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">3</span>
+                        <h3 class="step-title">Search & Ranking</h3>
+                        <p class="step-description">Our algorithms search through the index and rank results based on relevance, quality, and usefulness.</p>
+                        <ul class="step-features">
+                            <li><i class="fas fa-check"></i> Matches your query with relevant content</li>
+                            <li><i class="fas fa-check"></i> Evaluates page quality and authority</li>
+                            <li><i class="fas fa-check"></i> Considers freshness and user intent</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="process-step fade-in">
+                    <div class="step-visual">
+                        <div class="step-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <span class="step-number">4</span>
+                        <h3 class="step-title">Results Delivery</h3>
+                        <p class="step-description">We organize and present the most helpful results in an easy-to-understand format.</p>
+                        <ul class="step-features">
+                            <li><i class="fas fa-check"></i> Presents diverse result types</li>
+                            <li><i class="fas fa-check"></i> Provides instant answers when possible</li>
+                            <li><i class="fas fa-check"></i> Optimizes for your device and connection</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search Demo -->
+            <section class="search-demo fade-in">
+                <h2 class="demo-title">See the Search Process in Action</h2>
+                <div class="demo-container">
+                    <input type="text" class="demo-search-box" id="demoSearch" placeholder="Try a search query like 'artificial intelligence' or 'climate change'">
+                    <div class="demo-process">
+                        <div class="demo-stage active" id="stage1">
+                            <div class="demo-stage-icon">
+                                <i class="fas fa-keyboard"></i>
+                            </div>
+                            <div class="demo-stage-title">Query</div>
+                        </div>
+                        <div class="demo-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="demo-stage" id="stage2">
+                            <div class="demo-stage-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="demo-stage-title">Processing</div>
+                        </div>
+                        <div class="demo-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="demo-stage" id="stage3">
+                            <div class="demo-stage-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="demo-stage-title">Searching</div>
+                        </div>
+                        <div class="demo-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="demo-stage" id="stage4">
+                            <div class="demo-stage-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="demo-stage-title">Results</div>
+                        </div>
+                    </div>
+                    <div class="demo-results" id="demoResults">
+                        <div class="demo-result-item">
+                            <div class="demo-result-url">www.technologyfuture.com</div>
+                            <a href="#" class="demo-result-title">The Future of Search Engines - How AI is Changing Web Search</a>
+                            <div class="demo-result-snippet">Discover how artificial intelligence is revolutionizing the way we search for information online. Modern search engines use advanced neural networks to understand context.</div>
+                        </div>
+                        <div class="demo-result-item">
+                            <div class="demo-result-url">www.aimagazine.org</div>
+                            <a href="#" class="demo-result-title">Understanding Artificial Intelligence: A Complete Guide</a>
+                            <div class="demo-result-snippet">Artificial intelligence (AI) refers to the simulation of human intelligence in machines that are programmed to think like humans and mimic their actions.</div>
+                        </div>
+                        <div class="demo-result-item">
+                            <div class="demo-result-url">www.ailearning.edu</div>
+                            <a href="#" class="demo-result-title">Learn AI - Free Online Courses and Resources</a>
+                            <div class="demo-result-snippet">Start your journey into artificial intelligence with our comprehensive collection of free courses, tutorials, and learning resources for beginners and experts.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Key Features -->
+            <section class="fade-in">
+                <h2 class="section-title">What Makes AlfaaX Search Special</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3 class="feature-title">Privacy First</h3>
+                        <p class="feature-desc">We never store your personal data or search history. Your searches are anonymous and encrypted.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="feature-title">Lightning Fast</h3>
+                        <p class="feature-desc">Optimized infrastructure delivers search results in milliseconds, saving you valuable time.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <h3 class="feature-title">AI-Powered</h3>
+                        <p class="feature-desc">Our advanced algorithms understand context and intent, delivering more relevant results.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section class="faq-section fade-in">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How does AlfaaX determine which results to show?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            We use hundreds of factors to rank search results, including relevance to your query, website quality and authority, freshness of content, and your location and search history (if you're signed in and have enabled these features).
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Does AlfaaX track my searches?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            No, AlfaaX is built with privacy as a core principle. We don't store personally identifiable information or create search history profiles. Your searches are anonymous and encrypted.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How often is the search index updated?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            Our web crawlers continuously discover and index new content. Popular websites are crawled frequently, while less active sites might be crawled less often. The entire process happens automatically in the background.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Can I influence how my website appears in AlfaaX results?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            The best way to improve your website's visibility is to create high-quality, relevant content that provides value to users. Ensure your site is mobile-friendly, loads quickly, and has a clear structure.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="cta-section fade-in">
+                <h2 class="cta-title">Ready to Experience Better Search?</h2>
+                <p class="cta-text">Join millions of users who have discovered the power of AlfaaX search. Try it now and see the difference for yourself.</p>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary" style="background: white; color: var(--primary); margin-right: 1rem;">Start Searching with AlfaaX</button>
+                    <button class="btn btn-outline" style="border-color: white; color: white;">Learn More</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>AlfaaX</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Products</h3>
+                <ul class="footer-links">
+                    <li><a href="#">AlfaaX Search</a></li>
+                    <li><a href="#">AlfaaX Images</a></li>
+                    <li><a href="#">AlfaaX News</a></li>
+                    <li><a href="#">AlfaaX for Business</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Status</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">GDPR</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2023 AlfaaX Technologies. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Theme Management
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('alfaaX-theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                enableDarkMode();
+            } else {
+                enableLightMode();
+            }
+        }
+
+        function enableDarkMode() {
+            body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            localStorage.setItem('alfaaX-theme', 'dark');
+        }
+
+        function enableLightMode() {
+            body.classList.remove('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            localStorage.setItem('alfaaX-theme', 'light');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        });
+
+        // Search Demo Functionality
+        const demoSearch = document.getElementById('demoSearch');
+        const demoStages = [
+            document.getElementById('stage1'),
+            document.getElementById('stage2'),
+            document.getElementById('stage3'),
+            document.getElementById('stage4')
+        ];
+        const demoResults = document.getElementById('demoResults');
+
+        demoSearch.addEventListener('input', function() {
+            if (this.value.trim().length > 0) {
+                // Reset all stages
+                demoStages.forEach(stage => stage.classList.remove('active'));
+                demoStages[0].classList.add('active');
+                demoResults.style.display = 'none';
+
+                // Animate through stages
+                let currentStage = 0;
+                const animationInterval = setInterval(() => {
+                    demoStages[currentStage].classList.remove('active');
+                    currentStage++;
+                    
+                    if (currentStage < demoStages.length) {
+                        demoStages[currentStage].classList.add('active');
+                    } else {
+                        clearInterval(animationInterval);
+                        // Show results after final stage
+                        setTimeout(() => {
+                            demoResults.style.display = 'block';
+                        }, 500);
+                    }
+                }, 600);
+            } else {
+                // Reset if search box is empty
+                demoStages.forEach(stage => stage.classList.remove('active'));
+                demoStages[0].classList.add('active');
+                demoResults.style.display = 'none';
+            }
+        });
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // Initialize theme
+        initTheme();
+    </script>
+</body>
+</html>

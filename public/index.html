@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlfaaX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sue+Ellen+Francisco&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="Icon.jpeg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-right">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+            <div class="menu-dots open-btn" onclick="toggleSidebar()">
+                <div class="dots-grid">
+                    <span></span><span></span><span></span>
+                    <span></span><span></span><span></span>
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+            <button class="auth-button">Sign in</button>
+        </div>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <style>
+            /* Styled scrollbar for the sidebar */
+            #sidebar {
+                max-height: 100vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin; /* Firefox */
+                scrollbar-color: #efcfa0 transparent;
+            }
+
+            /* WebKit (Chrome, Edge, Safari) */
+            #sidebar::-webkit-scrollbar {
+                width: 10px;
+            }
+            #sidebar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            #sidebar::-webkit-scrollbar-thumb {
+                background: linear-gradient(180deg, rgba(124,58,237,0.95), rgba(6,182,212,0.95));
+                border-radius: 999px;
+                border: 2px solid rgba(255,255,255,0.06);
+                box-shadow: 0 0 6px rgba(0,0,0,0.25);
+            }
+            #sidebar::-webkit-scrollbar-thumb:hover {
+                filter: brightness(0.95);
+            }
+
+            /* Prevent content from being hidden under the scrollbar */
+            #sidebar .sidebar-content {
+                padding-right: 14px;
+            }
+        </style>
+
+        <span class="close-btn" onclick="toggleSidebar()">&times;</span>
+
+        <div class="sidebar-content">
+            <h2>Apps</h2>
+             <div class="social" style="display:flex; gap:10px; margin-bottom:12px;">
+                <a href="#" title="HTML"><i class="fa-brands fa-html5"></i></a>
+                <a href="#" title="CSS"><i class="fa-brands fa-css3"></i></a>
+                <a href="#" title="JavaScript"><i class="fa-brands fa-js"></i></a>
+                <a href="#" title="Python"><i class="fa-brands fa-python"></i></a>
+                <a href="#" title="C"><i class="fa-solid fa-c"></i></a>
+            </div>
+            <br>
+            <h2>Course</h2>
+            <div class="social" style="display:flex; gap:10px; margin-bottom:12px;">
+                <a href="#" title="HTML"><i class="fa-brands fa-html5"></i></a>
+                <a href="#" title="CSS"><i class="fa-brands fa-css3"></i></a>
+                <a href="#" title="JavaScript"><i class="fa-brands fa-js"></i></a>
+                <a href="#" title="Python"><i class="fa-brands fa-python"></i></a>
+                <a href="#" title="C"><i class="fa-solid fa-c"></i></a>
+            </div>
+
+            <br>
+            <h2>Social</h2>
+            <div class="social" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+                <a href="https://www.facebook.com/Roton595" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/Roton595" target="_blank" title="X / Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.tiktok.com/@paradoxical_roton" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/paradoxical_roton/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://github.com/Rotonvai" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section class="homepage fade-in" id="homepage">
+            <div class="logo-large">
+                <span class="a">A</span><span class="l">l</span><span class="f">f</span><span class="a">a</span><span class="a">a</span><span class="x">X</span>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-box" id="searchInput" placeholder="Search anything...">
+                <i class="fas fa-search search-icon" id="searchIcon"></i>
+            </div>
+            
+            <div class="search-buttons">
+                <button class="search-btn" id="searchButton">AlfaaX Search</button>
+                
+                <button class="search-btn ai-btn" type="button">AI Search</button>
+                </div>
+            </div>
+            
+            <div class="language-offer">
+                AlfaaX offered in: <a href="#">English</a>
+            </div>
+        </section>
+
+        <section class="results-page" id="resultsPage">
+            <div class="results-header">
+                <a href="#" class="results-logo" id="homeLogo">
+                    <i class="fas fa-search logo-icon"></i>
+                    AlfaaX
+                </a>
+                <div class="results-search-container">
+                    <input type="text" class="results-search-box" id="resultsSearchInput">
+                    <i class="fas fa-search results-search-icon" id="resultsSearchIcon"></i>
+                </div>
+            </div>
+            
+            <div class="results-stats" id="resultsStats"></div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Searching...</p>
+            </div>
+            
+            <div class="results-list" id="resultsList"></div>
+
+            <div id="pagination"></div>
+            
+            <div class="related-searches">
+                <h3 class="related-title">Related searches</h3>
+                <div class="related-links">
+                    <a href="#" class="related-link">AlfaaX search features</a>
+                    <a href="#" class="related-link">How AlfaaX works</a>
+                    <a href="#" class="related-link">AlfaaX vs Google</a>
+                    <a href="#" class="related-link">AlfaaX advanced search</a>
+                    <a href="#" class="related-link">AlfaaX search tips</a>
+                    <a href="#" class="related-link">AlfaaX privacy</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-top">
+            <div class="footer-location">Bangladesh</div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-links">
+                <a href="#">Help</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Settings</a>
+            </div>
+            <div class="footer-links">
+                <a href="about.html" target="_blank">About AlfaaX</a>
+                <a href="product.html" target="_blank">AlfaaX Products</a>
+                <a href="business.html" target="_blank">Business</a>
+                <a href="works.html" target="_blank">How Search works</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
